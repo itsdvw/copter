@@ -3,10 +3,13 @@
  For more information visit my blog: http://blog.tkjelectronics.dk/ or
  send me an e-mail:  kristianl@tkjelectronics.com
  */
- 
+
 #include <XBOXUSB.h>
 
 #define MOTORS 3
+#define MOTORS_OFF 20
+#define MOTORS_MIN 25
+#define MOTORS_MAX 254
 
 USB Usb;
 XBOXUSB Xbox(&Usb);
@@ -29,15 +32,18 @@ void loop() {
       //Serial.print("L2: ");
       //Serial.print(Xbox.getButtonPress(L2));
       //Serial.print("\tR2: ");
-      int temp = Xbox.getButtonPress(R2);
+      int in = Xbox.getButtonPress(R2);
+      int out = map(in, 0, 255, MOTORS_MIN, MOTORS_MAX);
       Serial.print("R2: ");
-      Serial.println(temp);
-      analogWrite(MOTORS, temp);
+      Serial.print(in);
+      Serial.print("\tPWM: ");
+      Serial.println(out);
+      analogWrite(MOTORS, out);
     } else {
-      digitalWrite(MOTORS, LOW);
+      analogWrite(MOTORS, MOTORS_OFF);
     }
   } else {
-    digitalWrite(MOTORS, LOW);
+    analogWrite(MOTORS, MOTORS_OFF);
   }
-  delay(1);
+  delay(5);
 }
