@@ -1,6 +1,7 @@
 #define EMPL_TARGET_ATMEGA328
 #include <Wire.h>
 #include <I2Cdev.h>
+#include "offsets.h"
 
 #include <helper_3dmath.h>
 
@@ -11,6 +12,8 @@ extern "C" {
 
 volatile unsigned char new_mpu;
 
+long gyro_bias[] = {GX_OFF, GY_OFF, GZ_OFF};
+long accel_bias[] = {AX_OFF, AY_OFF, AZ_OFF};
 unsigned long sensor_timestamp;
 Quaternion qu;
 
@@ -90,6 +93,8 @@ boolean initialize_mpu() {
   //unsigned short dmp_features = DMP_FEATURE_6X_LP_QUAT | DMP_FEATURE_SEND_RAW_ACCEL | DMP_FEATURE_SEND_CAL_GYRO;
   dmp_enable_feature(dmp_features);
   dmp_set_fifo_rate(DMP_FIFO_RATE);
+  dmp_set_gyro_bias(gyro_bias);
+  dmp_set_accel_bias(accel_bias);
   return true;
 }
 
